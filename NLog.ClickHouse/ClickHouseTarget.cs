@@ -7,7 +7,6 @@ using NLog.Layouts;
 using NLog.Targets;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -221,7 +220,6 @@ namespace NLog.ClickHouse
 
                     ExecuteBulk(bulkCopyInterface, values, columns).Wait();
                 }
-
             }
             catch (Exception ex)
             {
