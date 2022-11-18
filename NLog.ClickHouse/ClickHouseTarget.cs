@@ -172,7 +172,6 @@ namespace NLog.ClickHouse
                     MaxDegreeOfParallelism = 15
                 })
                 {
-
                     var columns = documents.First().Keys.ToList();
                     values = documents.Select(w => w.Values.ToArray()).ToList();
 
