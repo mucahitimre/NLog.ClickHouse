@@ -5,7 +5,7 @@ using System.IO;
 
 namespace NLog.ClickHouse.Example
 {
-    public class Program
+    internal class Program
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

@@ -32,6 +32,7 @@ namespace NLog.ClickHouse
             {
                 return exception.Data[LoggedKey] as bool? ?? false;
             }
+
             return false;
         }
 
@@ -46,7 +47,9 @@ namespace NLog.ClickHouse
         public static bool MustBeRethrown(this Exception exception)
         {
             if (exception.MustBeRethrownImmediately())
+            {
                 return true;
+            }
 
             var isConfigError = exception is NLogConfigurationException;
 
@@ -74,14 +77,20 @@ namespace NLog.ClickHouse
 
 #if !NETSTANDARD1_5
             if (exception is StackOverflowException)
+            {
                 return true;
+            }
 
             if (exception is ThreadAbortException)
+            {
                 return true;
+            }
 #endif
 
             if (exception is OutOfMemoryException)
+            {
                 return true;
+            }
 
             return false;
         }
