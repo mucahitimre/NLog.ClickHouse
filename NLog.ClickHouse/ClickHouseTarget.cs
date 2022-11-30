@@ -119,7 +119,9 @@ namespace NLog.ClickHouse
 
             var connectionString = _connectionString?.Render(DefaultLogEvent);
             if (string.IsNullOrEmpty(connectionString))
+            {
                 throw new NLogConfigurationException("Can not resolve ClickHouse ConnectionString. Please make sure the ConnectionString property is set.");
+            }
 
             var splitedConnectionString = connectionString.Split(';')
                 .Where(w => !string.IsNullOrEmpty(w))
@@ -154,13 +156,17 @@ namespace NLog.ClickHouse
         protected override void Write(IList<AsyncLogEventInfo> logEvents)
         {
             if (logEvents.Count == 0)
+            {
                 return;
+            }
 
             List<object[]> values = null;
             try
             {
                 if (_createDocumentDelegate == null)
+                {
                     _createDocumentDelegate = e => CreateDocument(e.LogEvent);
+                }
 
                 var documents = logEvents.Select(_createDocumentDelegate);
 
@@ -179,20 +185,28 @@ namespace NLog.ClickHouse
                 }
 
                 for (int i = 0; i < logEvents.Count; ++i)
+                {
                     logEvents[i].Continuation(null);
+                }
             }
             catch (Exception ex)
             {
                 InternalLogger.Error("Error when writing to ClickHouse {0}", ex);
 
                 if (ex.MustBeRethrownImmediately())
+                {
                     throw;
+                }
 
                 for (int i = 0; i < logEvents.Count; ++i)
+                {
                     logEvents[i].Continuation(ex);
+                }
 
                 if (ex.MustBeRethrown())
+                {
                     throw;
+                }
             }
         }
 
@@ -237,7 +251,9 @@ namespace NLog.ClickHouse
         {
             var document = new Dictionary<string, object>();
             if (IncludeDefaults || Fields.Count == 0)
+            {
                 AddDefaults(document, logEvent);
+            }
 
             // extra fields
             for (int i = 0; i < Fields.Count; ++i)
@@ -266,18 +282,28 @@ namespace NLog.ClickHouse
             document.Add("Date", logEvent.TimeStamp);
 
             if (logEvent.Level != null)
+            {
                 document.Add("Level", logEvent.Level.Name);
+            }
 
             if (logEvent.LoggerName != null)
+            {
                 document.Add("Logger", logEvent.LoggerName);
+            }
 
             if (logEvent.FormattedMessage != null)
+            {
                 document.Add("Message", logEvent.FormattedMessage);
+            }
 
             if (logEvent.Exception != null)
+            {
                 document.Add("Exception", CreateException(logEvent.Exception));
+            }
             else
+            {
                 document.Add("Exception", null);
+            }
         }
 
         private void AddProperties(Dictionary<string, object> document, LogEventInfo logEvent)
@@ -291,7 +317,9 @@ namespace NLog.ClickHouse
                     var value = GetValue(Properties[i], logEvent);
 
                     if (value != null)
+                    {
                         propertiesDocument[key] = value;
+                    }
                 }
 
                 if (IncludeEventProperties && logEvent.HasProperties)
@@ -299,18 +327,26 @@ namespace NLog.ClickHouse
                     foreach (var property in logEvent.Properties)
                     {
                         if (property.Key == null || property.Value == null)
+                        {
                             continue;
+                        }
 
                         string key = Convert.ToString(property.Key, CultureInfo.InvariantCulture);
                         if (string.IsNullOrEmpty(key))
+                        {
                             continue;
+                        }
 
                         string value = Convert.ToString(property.Value, CultureInfo.InvariantCulture);
                         if (string.IsNullOrEmpty(value))
+                        {
                             continue;
+                        }
 
                         if (key.IndexOf('.') >= 0)
+                        {
                             key = key.Replace('.', '_');
+                        }
 
                         if (propertiesDocument.ContainsKey(key))
                         {
@@ -324,14 +360,18 @@ namespace NLog.ClickHouse
                 }
 
                 if (propertiesDocument.Count > 0)
+                {
                     document.Add("Properties", propertiesDocument);
+                }
             }
         }
 
         private Dictionary<string, object> CreateException(Exception exception)
         {
             if (exception == null)
+            {
                 return new Dictionary<string, object>();
+            }
 
             if (exception is AggregateException aggregateException)
             {
@@ -356,7 +396,9 @@ namespace NLog.ClickHouse
 
 #if !NETSTANDARD1_5
             if (exception is ExternalException external)
+            {
                 document.Add("ErrorCode", external.ErrorCode);
+            }
 #endif
             document.Add("HResult", exception.HResult);
             document.Add("Source", exception.Source ?? string.Empty);
@@ -383,13 +425,15 @@ namespace NLog.ClickHouse
         {
             var value = (field.Layout != null ? RenderLogEvent(field.Layout, logEvent) : string.Empty).Trim();
             if (string.IsNullOrEmpty(value))
+            {
                 return null;
+            }
 
             object result;
             // int - bool - Datetime - UUID - string 
             switch (field.CHColumnType)
             {
-                case "Datetime":
+                case "DateTime":
                     DateTime.TryParse(value, out var datetimeResult);
                     result = datetimeResult;
                     break;
