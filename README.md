@@ -1,5 +1,6 @@
 # NLog.ClickHouse
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e7772b8d659c4e569fd1f87657af165a)](https://app.codacy.com/gh/mucahitimre/NLog.ClickHouse?utm_source=github.com&utm_medium=referral&utm_content=mucahitimre/NLog.ClickHouse&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://app.travis-ci.com/mucahitimre/NLog.ClickHouse.svg?branch=master)](https://app.travis-ci.com/mucahitimre/NLog.ClickHouse)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/984706964d6c4ff7a55b58f544783c23)](https://www.codacy.com/gh/mucahitimre/NLog.ClickHouse/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mucahitimre/NLog.ClickHouse&amp;utm_campaign=Badge_Grade)
 
